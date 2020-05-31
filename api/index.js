@@ -6,30 +6,33 @@ const sequelize = new Sequelize('app', 'app', 'app', {
     dialect: 'mysql',
     // define: {
     //     timestamps: true,
+    //     paranoid: true,
     // },
 });
 
+const { User } = require('./models');
 
-const Model = Sequelize.Model;
 
-class User extends Model {
-}
+// const Model = Sequelize.Model;
+//
+// class User extends Model {
+// }
 
-User.init({
-    // attributes
-    firstName: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    lastName: {
-        type: Sequelize.STRING
-        // allowNull defaults to true
-    }
-}, {
-    sequelize,
-    modelName: 'users'
-    // options
-});
+// User.init({
+//     // attributes
+//     firstName: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
+//     lastName: {
+//         type: Sequelize.STRING
+//         // allowNull defaults to true
+//     }
+// }, {
+//     sequelize,
+//     modelName: 'users'
+//     // options
+// });
 
 sequelize
     .authenticate()
@@ -55,7 +58,7 @@ sequelize
                     // Delete everyone named "Jane"
                     User.destroy({
                         where: {
-                            id: 1
+                            id: [1, 2, 3, 4, 5]
                         }
                     }).then(() => {
                         console.log("Done");
