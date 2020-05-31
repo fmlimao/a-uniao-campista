@@ -19,6 +19,11 @@ module.exports = (function () {
         return this.code;
     };
 
+    JsonReturn.prototype.setError = function (error) {
+        this.error = error;
+        return this;
+    };
+
     JsonReturn.prototype.addMessage = function (message) {
         this.messages.push(message);
         return this;
@@ -27,6 +32,44 @@ module.exports = (function () {
     JsonReturn.prototype.addContent = function (key, value) {
         this.content[key] = value;
         this.hasContent = true;
+        return this;
+    };
+
+    JsonReturn.prototype.addFields = function (fields) {
+        for (let i in fields) {
+            const field = fields[i];
+            this.addField(field);
+        }
+
+        return this;
+    };
+
+    JsonReturn.prototype.addField = function (field) {
+        this.form[field] = {
+            error: false,
+            messages: [],
+        };
+        this.hasForm = true;
+
+        return this;
+    };
+
+    JsonReturn.prototype.setFieldError = function (field, error, message) {
+        if (typeof message === 'undefined') {
+            message = null;
+        }
+
+        this.form[field].error = error;
+
+        if (message) {
+            this.addFieldMessage(field, message);
+        }
+
+        return this;
+    };
+
+    JsonReturn.prototype.addFieldMessage = function (field, message) {
+        this.form[field].messages.push(message);
         return this;
     };
 
