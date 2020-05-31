@@ -104,6 +104,7 @@ app.post('/posts', async (req, res) => {
             ret.addContent('post', newPost);
         });
 
+        ret.setCode(201);
         return res.status(ret.getCode()).json(ret.generate());
     } catch (err) {
         ret.setError(true);
@@ -118,6 +119,71 @@ app.post('/posts', async (req, res) => {
 
         return res.status(ret.getCode()).json(ret.generate());
     }
+});
+
+app.get('/posts/:postId', async (req, res) => {
+    const ret = new jsonReturn();
+    const {postId} = req.params;
+
+    Post.findAll({
+        where: {
+            id: postId,
+        },
+    })
+        .then(posts => {
+            if (!posts.length) {
+                ret.setCode(404);
+                ret.setError(true);
+                ret.addMessage('Post não encontrado.');
+
+                return res.status(ret.getCode()).json(ret.generate());
+            }
+            ret.addContent('post', posts[0]);
+            return res.status(ret.getCode()).json(ret.generate());
+        })
+        .catch(err => {
+            ret.setCode(500).setError(true).addMessage(err.message);
+            return res.status(ret.getCode()).json(ret.generate());
+        });
+});
+
+app.delete('/posts/:postId', async (req, res) => {
+    const ret = new jsonReturn();
+    const {postId} = req.params;
+
+    Post.findAll({
+        where: {
+            id: postId,
+        },
+    })
+        .then(posts => {
+            if (!posts.length) {
+                ret.setCode(404);
+                ret.setError(true);
+                ret.addMessage('Post não encontrado.');
+
+                return res.status(ret.getCode()).json(ret.generate());
+            }
+
+            Post.destroy({
+                where: {
+                    id: postId,
+                }
+            })
+                .then(() => {
+                    ret.setCode(204);
+                    ret.addMessage('Post removido com sucesso.');
+                    return res.status(ret.getCode()).json(ret.generate());
+                })
+                .catch(err => {
+                    ret.setCode(500).setError(true).addMessage(err.message);
+                    return res.status(ret.getCode()).json(ret.generate());
+                });
+        })
+        .catch(err => {
+            ret.setCode(500).setError(true).addMessage(err.message);
+            return res.status(ret.getCode()).json(ret.generate());
+        });
 });
 
 // catch 404 and forward to error handler
