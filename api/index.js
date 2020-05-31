@@ -31,7 +31,38 @@ app.get('/', (req, res) => {
 app.get('/posts', async (req, res) => {
     const ret = new jsonReturn();
 
-    Post.findAll()
+    let start = req.query.start;
+    let length = req.query.length;
+    let order = req.query.order;
+
+    if (start) {
+        start = parseInt(start);
+    } else {
+        start = 0;
+    }
+
+    if (length) {
+        length = parseInt(length);
+    } else {
+        length = 10;
+    }
+
+    if (order) {
+        if (!order[0]) {
+            order[0] = 'id';
+        }
+        if (!order[1]) {
+            order[1] = 'ASC';
+        }
+    } else {
+        order = ['id', 'ASC'];
+    }
+
+    Post.findAndCountAll({
+        order: [order],
+        limit: length,
+        offset: start,
+    })
         .then(posts => {
             ret.addContent('posts', posts);
             return res.status(ret.getCode()).json(ret.generate());
