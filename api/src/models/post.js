@@ -2,9 +2,9 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
+        userId: DataTypes.INTEGER,
         title: DataTypes.STRING,
-        body: DataTypes.STRING,
-        userId: DataTypes.INTEGER
+        body: DataTypes.STRING
     }, {
         timestamps: true,
         paranoid: true,
@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     Post.associate = function (models) {
         // associations can be defined here
         Post.belongsTo(models.User);
+        Post.hasMany(models.PostImage);
     };
     return Post;
 };

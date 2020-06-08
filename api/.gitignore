@@ -1,4 +1,6 @@
-/.env
-/config/config.json
 /node_modules/
+/public/files/
+
+/.env
 /package-lock.json
+/src/database/config/config.json
